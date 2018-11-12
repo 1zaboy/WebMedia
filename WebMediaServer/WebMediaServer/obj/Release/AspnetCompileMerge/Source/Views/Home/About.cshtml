@@ -1,0 +1,78 @@
+﻿@using WebMediaServer.Models
+@using WebMediaServer.ModelsDB
+@model IEnumerable<WebMediaServer.Models.ViewInfoOnCard>
+
+
+@Styles.Render("~/Content/MySile.css")
+
+
+
+
+
+
+@*////////////////////////*@
+
+
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12 col-lg-3 bd-sidebar">
+
+            <nav class="navbar navbar-expand-lg navbar-light bg-light vib">
+                <button class="navbar-toggler re" type="button" data-toggle="collapse" data-target="#navbarSupportedContent1" aria-controls="navbarSupportedContent1" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="ccccc"><img src="~/Content/Img/Icon/caret-bottom.svg" width="100%" /></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent1">
+                    <dl class="re">
+                        <dt>
+                            <select class="nav-item form-control in" id="sel1">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                            </select>
+                        </dt>
+                        <dt>
+                            <select class="nav-item form-control in" id="sel1">
+                                <option>1</option>
+                                <option>2</option>
+                                <option>3</option>
+                                <option>4</option>
+                            </select>
+                        </dt>
+                    </dl>
+                </div>
+            </nav>
+        </div>
+
+        <div class="col-12 col-lg-9">
+
+            <div class="row">
+                @foreach (var ff in @Model)
+                {
+
+                    <!--werwerweprituweripotupwioerutpiwuertipowuerpiou-->
+                    <div class="col-lg-4 col-sm-12">
+                        <div class="card bor" onclick="return location.href = ' @Url.Action("PlayVideo", "Home", new {id = ff.id})';">
+                            @if (@ff.Url2 != "")
+                            {
+                                <img class="card-img-top" width="100%" height="100%" src=@Url.Content(@ff.Url2) alt="Card image cap">
+                            }
+                            else
+                            {
+                                <img class="card-img-top" width="100%" height="100%" src="https://fch.lisboa.ucp.pt/sites/default/files/assets/images/avatar-fch_8.png" alt="Card image cap">   
+                            }
+                            <div class="card-body">
+                                <h5 class="card-title">@ff.NameVideo</h5>
+                                <p class="card-text">@ff.UserName</p>
+                                <p class="card-text"><small class="text-muted">@ff.DateAddVideo</small></p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            
+        </div>
+    </div>
+</div>

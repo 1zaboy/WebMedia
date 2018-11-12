@@ -1,0 +1,63 @@
+﻿@using System.Drawing.Imaging
+@model WebMediaServer.Models.ViewInfoOnPlayVideo
+@{
+    ViewBag.Title = "PlayVideo";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@Scripts.Render("https://vjs.zencdn.net/5.10.4/video.js")
+@Scripts.Render("https://cdnjs.cloudflare.com/ajax/libs/three.js/r76/three.js")
+@Scripts.Render("https://rawgit.com/yanwsh/videojs-panorama/master/dist/videojs-panorama.v5.js")
+@Styles.Render("https://vjs.zencdn.net/5.10.4/video-js.css")
+@Styles.Render("https://cdn.rawgit.com/yanwsh/videojs-panorama/master/dist/videojs-panorama.css")
+
+<style>
+    .player-wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        
+    }
+    .z-play {
+        z-index: 0;
+    }
+    .player {
+        position: relative;
+        top: 0;
+        left: 0;
+        height: 500px;
+        width: 850px;
+    }
+</style>
+
+
+
+
+
+<div style="text-align: center">
+    <div class="player-wrapper z-play">
+        <video id="player" class="player video-js vjs-default-skin vjs-big-play-centered" crossorigin="anonymous" preload="metadata" autoplay controls>
+            <source poster=@Url.Content(@Model.Url2) src=@Url.Content(@Model.Url1)>
+        </video>
+    </div>
+</div>
+<div class="z-play">
+<h4>@Model.NameVideo</h4>
+<h5><a href="#">@Model.UserName</a></h5>
+</div>
+<script>
+    var options = {
+        plugins: {
+            panorama: {
+                clickAndDrag: true,
+                clickToToggle: true,
+                autoMobileOrientation: true,
+                backToVerticalCenter: false,
+                backToHorizonCenter: false
+            }
+        }
+    };
+    var player = videojs('player', options, function () {
+
+    });
+</script>

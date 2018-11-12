@@ -1,0 +1,112 @@
+﻿@using System.CodeDom.Compiler
+@model WebMediaServer.Models.UploadVideoContent
+
+<br />
+<br />
+<br />
+<br />
+<br />
+ 
+<div>
+    <input type="text" id="title"/><br/>
+    <textarea class="form-control" id="textD" rows="3"></textarea>
+    <div id="boxFile">
+        <input type="file" name="upload" id="uploadFile" accept="image/png, image/jpeg, video/mp4"/><br/>
+    </div>
+    <button id="submit">Загрузить</button>
+</div>
+<div class="progress">
+    <div id="porg" class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+</div>
+
+<script type="text/javascript">
+    var i2 = false;
+    $('#uploadFile').change(function() {
+        var F = document.getElementById('uploadFile').files;
+        var ff = F[0].type.split('/')[0];
+        if (ff == "video") {
+            $('#boxFile').append("<input type='file' name='upload' id='uploadFile1'/><br/>");
+            i2 = true;
+        }
+    });
+    $('#submit').click(function () {
+        if (document.getElementById('uploadFile').files != null) {
+        var r = document.getElementById('uploadFile').files;
+        var r1;// = document.getElementById('uploadFile1').files;
+        upload(r[0]);
+        if (i2) {
+            r1 = document.getElementById('uploadFile1').files;
+            upload(r1[0]);
+            upload_DB1(r[0], r1[0]);   
+            
+        } else {
+            upload_DB(r[0]);   
+        }
+        } else {
+            alert('please add files');
+        }
+    });
+    function upload(file) {
+        var blob = file;
+        var BYTES_PER_CHUNK = 1024*1024; // sample chunk sizes.
+        var SIZE = blob.size;
+        //upload content
+        var start = 0;
+        var end = BYTES_PER_CHUNK;
+        var completed = 0;
+        var count = SIZE % BYTES_PER_CHUNK == 0 ? SIZE / BYTES_PER_CHUNK : Math.floor(SIZE / BYTES_PER_CHUNK) + 1;
+        var countStep = 0;
+        var Ftype = file.type.split('/')[0];
+        while (start < SIZE) {
+            var chunk = blob.slice(start, end);
+            //
+            var formData1 = new FormData();
+            formData1.append('FileBytes', chunk);
+            formData1.append('ConType', Ftype);
+            formData1.append('NameFile', file.name);
+            formData1.append('pos', start);
+            countStep = countStep + 1;
+            var xhr = new XMLHttpRequest();
+            xhr.onload = function () {
+                completed = completed + 1;
+                //if (completed === count) {
+                //    uploadComplete();
+                //}
+                var tt = Math.round(completed / count * 100);
+                document.getElementById('porg').style.width = tt.toString() + '%';
+                document.getElementById('porg').innerText = tt.toString() + '%';
+            };
+            xhr.open("POST", "/Home/MultiUpload", true);
+            xhr.send(formData1);
+            start = end;
+            end = start + BYTES_PER_CHUNK;
+        }
+          
+    }
+
+    function upload_DB1(file, file1) {
+        var formData2 = new FormData();
+        formData2.append('Name', file.name);
+        formData2.append('TextDescription', $("#textD").val());
+        formData2.append('filename1', file.name);
+        formData2.append('typeF1', file.type);
+        formData2.append('filename2', file1.name);
+        formData2.append('typeF2', file1.type);
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/Home/Upload", true);
+        xhr.send(formData2);
+    }
+    function upload_DB(file) {
+        var formData2 = new FormData();
+        formData2.append('Name', file.name);
+        formData2.append('TextDescription', $("#textD").val());
+        formData2.append('filename1', file.name);
+        formData2.append('typeF1', file.type);
+        formData2.append('filename2', "");
+        formData2.append('typeF2', "");
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/Home/Upload", true);
+        xhr.send(formData2);
+    }
+
+</script>
